@@ -8,6 +8,8 @@ service CatalogService @(path: 'CatalogService') {
       Readable,
       Insertable
    }
+   
+   @readonly
    entity AddressService         as projection on db.master.address;
 
    entity EmployeeService        as projection on db.master.emplyees;
@@ -78,9 +80,5 @@ service CatalogService @(path: 'CatalogService') {
                          salaryAmount: String, ) returns array of EmployeeService;
    
    function getMaleEmployees() returns array of EmployeeService;
-   function test() returns String ;
 
-// this.on - Perform operations on the database
-// this.before - Validations / Pre-checks
-// this.after - Post-checks
 }
