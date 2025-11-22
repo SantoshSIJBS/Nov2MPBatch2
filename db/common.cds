@@ -3,7 +3,6 @@ namespace salesorders.common;
 // Standard Reusable Types
 using { Currency } from '@sap/cds/common';
 
-
 // Reusable Types
 type Guid        : String(32) ;
 type PhoneNumber : String(64);
