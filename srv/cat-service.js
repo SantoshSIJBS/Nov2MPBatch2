@@ -89,5 +89,30 @@ module.exports = cds.service.impl( async function() {
         } catch (error) {
             request.error(500,error);
         }
-    })
+    });
+this.on('SendRequest', async (request, response) => {
+        try {
+ 
+            let id = uuid(); // generates a new UUID
+            const propertyID = request.params[0];
+            const requestMessage = request.data;
+ 
+            const newContactReq = {
+                ID: id,
+                property_ID: propertyID,
+                requester_ID: '4g2b1c0d-9d55-4e77-f999-1e2f3a4b5c56',
+                requestMessage: requestMessage,
+            }
+ 
+            const tx = cds.transaction(request);
+ 
+            const insertResult = await tx.run(
+                INSERT.into('RJ_RE_MANAGEMYPROPERTY_CONTACTREQUESTS').entries(newContactReq)
+            );
+            return 'Contact request for Property ID ${propertyID} successfully logged.';
+        } catch (error) {
+            return "Error: " + error.toString();
+        }
+ 
+    });
 })

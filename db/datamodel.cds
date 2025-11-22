@@ -89,4 +89,17 @@ context transaction {
         PO_ITEMS_POS : Integer @(title : '{i18n>PO_ITEMS_POS}');
         PRODUCT_GUID : Association to master.product @(title : '{i18n>PRODUCT_GUID}');
     }
+
+    entity PurchaseOrder {
+    key poId : Integer;
+    poName  : String;
+    linkToContact  : Association to POItem;
+    }
+
+    entity POItem {
+        key poItem : String;
+        key poNum: String;
+        poName : String;
+        poPhone : Integer;	
+    }
 }

@@ -147,6 +147,23 @@ annotate service.PurchaseOrderService with @(
     }
 );
 
+annotate CatalogService.BusinessPartnerService with {
+    PARTNER_GUID@(
+        Common : {
+            Text : 'PARTNER_GUID.COMPANY_NAME',
+        },
+        ValueList.entity : CatalogService.BusinessPartnerService
+    )
+};
+
+@cds.odata.valuelist
+annotate CatalogService.BusinessPartnerService with @(
+    UI.Identification:[{
+        $Type : 'UI.DataField',
+        Value : COMPANY_NAME
+    }]
+);
+
 annotate service.PurcaseItemsService with @(
  UI.LineItem : [
         {

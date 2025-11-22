@@ -1,18 +1,19 @@
 using {salesorders.db as db} from '../db/datamodel';
 
-service CatalogService @(path: 'CatalogService') {
+service CatalogService @(path: 'CatalogService', requires: 'authenticated-user') {
 
    entity BusinessPartnerService as projection on db.master.businesspartner;
 
-   @Capabilities: {
-      Readable,
-      Insertable
-   }
-   
-   @readonly
-   entity AddressService         as projection on db.master.address;
+   entity AddressService        as projection on db.master.address;
 
-   entity EmployeeService        as projection on db.master.emplyees;
+   entity EmployeeService       @(restrict: [
+        {
+            grant : ['READ'], to : 'Viewer', where : 'myCountry = $user.myCountry'
+        },
+        {
+            grant : ['WRITE'], to : 'Admin'
+        }
+    ]) as projection on db.master.emplyees;
 
    @readonly
    entity ProductService         as projection on db.master.product {*} actions {
@@ -21,6 +22,8 @@ service CatalogService @(path: 'CatalogService') {
 
    entity PurcaseItemsService    as projection on db.transaction.salesorderitems;
 
+   entity PO as projection on db.transaction.PurchaseOrder;
+   entity ItemPO as projection on db.transaction.POItem;  
    @odata.draft.enabled : true
    entity PurchaseOrderService   as
       projection on db.transaction.salesorder {

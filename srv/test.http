@@ -1,10 +1,13 @@
 
+@adminUser = Authorization: Basic smeUser smePwd
+
 ### Read all services
 GET http://localhost:4004/odata/v4/CatalogService
 
 
 ### Read all services
 GET http://localhost:4004/odata/v4/CatalogService/$metadata
+{{adminUser}}
 
 ### Read 
 GET http://localhost:4004/odata/v4/CatalogService/EmployeeService
@@ -97,4 +100,26 @@ Content-Type: application/json
 GET http://localhost:4004/odata/v4/CatalogService/PurchaseOrderService/74867AD200E41EDBA5D8B0C98DC28052/smallestOrder()
 
 ###
-GET http://localhost:4004/odata/v4/CatalogService/PurchaseOrderService/74867AD200E41EDBA5D8B0C98DC28052/largestOrder()
+GET http://localhost:4004/odata/v4/CatalogService/PurchaseOrderService/74867AD200E41EDBA5D8B0C98DC28052/largestOrder() retunrs 
+
+
+###
+POST http://localhost:4004/odata/v4/CatalogService/PO
+Content-Type: application/json
+
+{
+      "poId" : "300030303",
+      "poName": "ABCD",
+      "linkToContact": "RawMaterial"
+}
+
+
+###
+POST http://localhost:4004/odata/v4/CatalogService/ItemPO
+Content-Type: application/json
+
+{
+      "poItem" : "RawMaterial",
+      "poName": "Raw",
+      "poPhone": "989890"
+}

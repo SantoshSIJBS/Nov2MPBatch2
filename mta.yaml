@@ -1,0 +1,74 @@
+_schema-version: 3.3.0
+ID: SalesOrders
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+# Begin of UI Module
+  - name: SalesOrders-ui
+    type: nodejs
+    path: app
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api
+          strictSSL: true
+          forwardAuthToken: true
+          url: '~{srv-url}'
+      - name: SalesOrders-auth
+# End of UI Module
+  - name: SalesOrders-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      instances: 1
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: SalesOrders-auth
+      - name: SalesOrders-db
+
+  - name: SalesOrders-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: SalesOrders-db
+
+resources:
+  - name: SalesOrders-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: SalesOrders-${org}-${space}
+        tenant-mode: dedicated
+  - name: SalesOrders-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+  - name: SalesOrders-usp
+    type: org.cloudfoundry.user-provided-service
+    parameters:
+      service-plan: standard
